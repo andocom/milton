@@ -1,0 +1,43 @@
+﻿@page "/scrapper"
+@using System.Text
+
+@* @attribute [StreamRendering] *@
+@rendermode InteractiveServer
+
+
+
+<h3>Scrapper</h3>
+
+<FluentTextField Label="Enter URL" Placeholder="https://example.com" @bind-Value="url" Style="width: 100%; max-width: 600px;" />
+<FluentButton Appearance="Appearance.Accent" @onclick="@ScrapProducts">Scrap Products</FluentButton>
+<hr/>
+<div class="scrap-results">
+    <div>@((MarkupString)results)</div>
+</div>
+
+@code {
+    private string url = "https://directtrophies.com.au/product-category/sports-trophies/sports-trophies-academic/";
+    private StringBuilder sb = new StringBuilder();
+    private string results = "No results yet...";
+   
+    private async Task ScrapProducts()
+    {
+        sb.Clear();
+        sb.AppendLine("<h4>Scraped Products:</h4>");
+        var scraper = new ProductScraper();
+        var products = await scraper.ScrapeProductsAsync(url);
+
+        sb.AppendLine($" <br/>Products Found: {products.Count()}");
+        //var sb = new StringBuilder();
+        foreach (var product in products)
+        {
+            sb.AppendLine($" <br/>Name: {product.Name}");
+            sb.AppendLine($" SKU: {product.SKU}");
+            sb.AppendLine($" Price Range: {product.PriceRange}");
+            results = sb.ToString();
+            Console.WriteLine(product);
+        }
+
+    } 
+
+}
