@@ -7,9 +7,11 @@
 
 
 <h3>Scrapper</h3>
+<FluentStack Horizontal AlignItems="Center">
+    <FluentTextField Label="Enter URL" Placeholder="https://example.com" @bind-Value="url" Style="width: 100%; max-width: 600px;" />
+    <FluentButton Appearance="Appearance.Accent" @onclick="@ScrapProducts">Scrap Products</FluentButton>
+</FluentStack>
 
-<FluentTextField Label="Enter URL" Placeholder="https://example.com" @bind-Value="url" Style="width: 100%; max-width: 600px;" />
-<FluentButton Appearance="Appearance.Accent" @onclick="@ScrapProducts">Scrap Products</FluentButton>
 <hr/>
 <div class="scrap-results">
     <div>@((MarkupString)results)</div>
