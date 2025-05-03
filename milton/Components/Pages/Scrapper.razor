@@ -33,9 +33,9 @@
         //var sb = new StringBuilder();
         foreach (var product in products)
         {
-            sb.AppendLine($" <br/>Name: {product.Name}");
-            sb.AppendLine($" SKU: {product.SKU}");
-            sb.AppendLine($" Price Range: {product.PriceRange}");
+            sb.AppendLine($" <br/>Name: {product.item_name}");
+            sb.AppendLine($" SKU: {product.sku}");
+            sb.AppendLine($" Price Range: {product.price.ToString("C")}");
             results = sb.ToString();
             Console.WriteLine(product);
         }
