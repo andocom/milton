@@ -18,8 +18,8 @@
     @bind-Value="selectedSource" 
     Label="Filter by Source" 
     Class="mb-4" 
-    Style="width: 300px;" 
-    @onchange="(args)=>FilterSources()"
+    Style="width: 300px;"
+              @onchange="(args) => OnSourceChanged(args.Value?.ToString())"
     >
     <option value="">-- All Sources --</option>
     @foreach (var name in sourceNames)
@@ -30,7 +30,7 @@
 
 <FluentButton OnClick="ResetFilter" Class="mb-4">Clear Filter</FluentButton>
 
-
+<div>@((MarkupString)msg)</div>
 
 @if (filteredSources == null)
 {
@@ -53,7 +53,7 @@ else
             {
                 <tr>
                     <td>@src.SourceName</td>
-                    <td>@src.Url</td>
+                    <td>@(string.Join("/", new Uri(src.Url).Segments.Skip(3)).TrimEnd('/'))</td>
                     <td>@src.Category</td>
                     <td>
                         <FluentSwitch @bind-Checked="src.Active" OnChange="() => ToggleActive(src)" />
@@ -68,6 +68,7 @@ else
 }
 
 @code {
+    private string msg = string.Empty;
     private List<ScrapeSource>? sources;
     private List<ScrapeSource>? filteredSources;
     private ScrapeSource newSource = new();
@@ -88,8 +89,15 @@ else
         filteredSources = sources;
     }
 
+    private void OnSourceChanged(string? newValue)
+    {
+        selectedSource = newValue ?? string.Empty;
+        FilterSources();
+    }
+
     private void FilterSources()
     {
+        msg = "selectedSource: " + selectedSource;
         if (string.IsNullOrWhiteSpace(selectedSource))
             filteredSources = sources;
         else
