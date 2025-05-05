@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.FluentUI.AspNetCore.Components;
 using milton.Components;
 
@@ -5,6 +6,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 //SimpleLogger.TargetLogPath = Path.Combine(builder.Environment.ContentRootPath, "App_Data");
 SimpleLogger.TargetLogPath = builder.Environment.WebRootPath;
+builder.Services.AddDbContext<ProductDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.AddScoped<ProductSnapshotService>();
+builder.Services.AddScoped<SourcesService>();
 
 // Add services to the container.
 builder.Services.AddRazorComponents()

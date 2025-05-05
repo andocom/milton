@@ -1,5 +1,7 @@
 ﻿@page "/scrapper"
 @using System.Text
+@inject ProductSnapshotService SnapshotService
+@inject SourcesService SourcesService
 
 @* @attribute [StreamRendering] *@
 @rendermode InteractiveServer
@@ -26,7 +28,7 @@
     {
         sb.Clear();
         sb.AppendLine("<h4>Scraped Products:</h4>");
-        var scraper = new ProductScraper();
+        var scraper = new TrophiesDirect(SnapshotService);
         var products = await scraper.ScrapeProductsAsync(url);
 
         sb.AppendLine($" <br/>Products Found: {products.Count()}");
@@ -34,9 +36,9 @@
         foreach (var product in products)
         {
             //sb.AppendLine("<br/>" + product.Log);
-            sb.AppendLine($" <br/>Name: {product.item_name}");
-            sb.AppendLine($" SKU: {product.sku}");
-            sb.AppendLine($" Price: {product.price.ToString("C")}");
+            sb.AppendLine($" <br/>Name: {product.Name}");
+            sb.AppendLine($" SKU: {product.SKU}");
+            sb.AppendLine($" Price: {product.Price.ToString("C")}");
             //SimpleLogger.Log($"Name: {product.item_name} sku: {product.sku} price: {product.price.ToString("C")}");
             results = sb.ToString();
             Console.WriteLine(product);
