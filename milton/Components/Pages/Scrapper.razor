@@ -20,8 +20,8 @@
 @code {
     private string url = "https://directtrophies.com.au/product-category/sports-trophies/sports-trophies-academic/";
     private StringBuilder sb = new StringBuilder();
-    private string results = "No results yet...";
-   
+    private string results = "No results yet... base: " + AppContext.BaseDirectory;
+
     private async Task ScrapProducts()
     {
         sb.Clear();
@@ -33,13 +33,16 @@
         //var sb = new StringBuilder();
         foreach (var product in products)
         {
+            //sb.AppendLine("<br/>" + product.Log);
             sb.AppendLine($" <br/>Name: {product.item_name}");
             sb.AppendLine($" SKU: {product.sku}");
-            sb.AppendLine($" Price Range: {product.price.ToString("C")}");
+            sb.AppendLine($" Price: {product.price.ToString("C")}");
+            //SimpleLogger.Log($"Name: {product.item_name} sku: {product.sku} price: {product.price.ToString("C")}");
             results = sb.ToString();
             Console.WriteLine(product);
         }
-
+        SimpleLogger.Log($"Products Found: {products.Count()}");
+        SimpleLogger.Log($"Results: {results}");
     } 
 
 }

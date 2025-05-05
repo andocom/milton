@@ -3,6 +3,9 @@ using milton.Components;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//SimpleLogger.TargetLogPath = Path.Combine(builder.Environment.ContentRootPath, "App_Data");
+SimpleLogger.TargetLogPath = builder.Environment.WebRootPath;
+
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();

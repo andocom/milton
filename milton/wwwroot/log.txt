@@ -1,0 +1,124 @@
+2025-05-05 10:34:32 - Products Found: 40
+2025-05-05 10:34:32 - Results: <h4>Scraped Products:</h4>
+ <br/>Products Found: 40
+ <br/>Name: Flarex Maths Trophy
+ SKU: FLP20
+ Price: $19.95
+ <br/>Name: Flarex Science Trophy
+ SKU: FLP19
+ Price: $19.95
+ <br/>Name: Flarex Academic Trophy
+ SKU: FLP05
+ Price: $19.95
+ <br/>Name: Surgestar Spelling Bee Trophy
+ SKU: 24-RS50
+ Price: $21.95
+ <br/>Name: Surgestar Academic Science Trophy
+ SKU: 24-RS41
+ Price: $21.95
+ <br/>Name: Surgestar Academic Trophy
+ SKU: 24-RS39
+ Price: $21.95
+ <br/>Name: Surgestar Academic Computer Trophy
+ SKU: 24-RS42
+ Price: $21.95
+ <br/>Name: Surgestar Academic Maths Trophy
+ SKU: 24-RS40
+ Price: $21.95
+ <br/>Name: Sunowa Academic Trophy
+ SKU: SNW905
+ Price: $25.45
+ <br/>Name: Gallant Academic Trophy
+ SKU: A3005
+ Price: $16.95
+ <br/>Name: Spelling Bee Figure Trophy
+ SKU: DT638378
+ Price: $18.45
+ <br/>Name: Graduate Figure Trophy
+ SKU: DT638282
+ Price: $16.95
+ <br/>Name: Gladiator Spelling Bee Trophy
+ SKU: RI50G22
+ Price: $28.95
+ <br/>Name: Gladiator Library Reading Trophy
+ SKU: RI49G22
+ Price: $28.95
+ <br/>Name: Gladiator Reading Trophy
+ SKU: RI49GA22
+ Price: $29.45
+ <br/>Name: Gladiator Computers Trophy
+ SKU: RI42G22
+ Price: $28.95
+ <br/>Name: Anchor Science Trophy
+ SKU: AP719
+ Price: $17.45
+ <br/>Name: Anchor Academic Trophy
+ SKU: AP705
+ Price: $17.45
+ <br/>Name: Spartan Maths
+ SKU: SR108
+ Price: $19.45
+ <br/>Name: IKON Art Trophy
+ SKU: KN206
+ Price: $22.95
+ <br/>Name: Falcon Tower Reading
+ SKU: RI-49G-19
+ Price: $20.00
+ <br/>Name: Falcon Tower Knowledge
+ SKU: RI-39G-19
+ Price: $20.00
+ <br/>Name: Academic Galaxy Flame Trophy
+ SKU: UR205
+ Price: $31.95
+ <br/>Name: Cosmos Glass Academic
+ SKU: CKG205
+ Price: $59.95
+ <br/>Name: Icon Star The Globe
+ SKU: ASS529
+ Price: $15.95
+ <br/>Name: Icon Star Arts
+ SKU: ASS528
+ Price: $15.95
+ <br/>Name: Icon Star IT
+ SKU: ASS527
+ Price: $15.95
+ <br/>Name: Icon Star Knowledge
+ SKU: ASS526
+ Price: $15.95
+ <br/>Name: Icon Star Science
+ SKU: ASS525
+ Price: $15.95
+ <br/>Name: Icon Star Maths
+ SKU: ASS524
+ Price: $15.95
+ <br/>Name: Icon Star Literature
+ SKU: ASS523
+ Price: $15.95
+ <br/>Name: Icon Star Genius
+ SKU: ASS522
+ Price: $15.95
+ <br/>Name: Icon Star Graduate
+ SKU: ASS521
+ Price: $15.95
+ <br/>Name: Icon Star Academic Character
+ SKU: ASS503
+ Price: $15.95
+ <br/>Name: Peak Public Speaking
+ SKU: P213
+ Price: $21.45
+ <br/>Name: Computers Lynx
+ SKU: LR107
+ Price: $17.95
+ <br/>Name: Plaque Peak Public Speaking
+ SKU: LPF413
+ Price: $21.45
+ <br/>Name: Cosmos Academic
+ SKU: CR105
+ Price: $21.45
+ <br/>Name: Academic Mini Star
+ SKU: 12905
+ Price: $14.95
+ <br/>Name: Academic Classic 150mm
+ SKU: 12605
+ Price: $18.95
+

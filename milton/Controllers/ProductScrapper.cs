@@ -18,6 +18,7 @@ public class ProductInfo
 
 public class GtmProductData
 {
+    public string Log { get; set; }
     public int internal_id { get; set; }
     public int item_id { get; set; }
     public string item_name { get; set; }
@@ -64,6 +65,7 @@ public class ProductScraper
                 string decodedJson = WebUtility.HtmlDecode(encodedJson);
 
                 var productData = JsonSerializer.Deserialize<GtmProductData>(decodedJson);
+                if (productData != null) productData.Log = encodedJson;
                 if (productData != null) productDatas.Add(productData);
             }
         }
