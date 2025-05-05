@@ -38,4 +38,35 @@ public class SourcesService
             .Where(s => s.SourceName == sourceName)
             .ToListAsync();
     }
+
+    public async Task AddSource(ScrapeSource source)
+    {
+        _db.ScrapeSources.Add(source);
+        await _db.SaveChangesAsync();
+    }
+
+    public async Task AddRange(List<ScrapeSource> sourceList)
+    {
+        var existingUrls = await _db.ScrapeSources
+            .Select(s => s.Url.ToLower())
+            .ToListAsync();
+
+        var newSources = sourceList
+            .Where(s => !existingUrls.Contains(s.Url.ToLower()))
+            .ToList();
+
+        if (newSources.Any())
+        {
+            _db.ScrapeSources.AddRange(newSources);
+            await _db.SaveChangesAsync();
+        }
+    }
+
+
+    public async Task DeleteAllSourcesAsync()
+    {
+        var allSources = await _db.ScrapeSources.ToListAsync();
+        _db.ScrapeSources.RemoveRange(allSources);
+        await _db.SaveChangesAsync();
+    }
 }

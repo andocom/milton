@@ -13,6 +13,15 @@
     <FluentTextField Label="Enter URL" Placeholder="https://example.com" @bind-Value="url" Style="width: 100%; max-width: 600px;" />
     <FluentButton Appearance="Appearance.Accent" @onclick="@ScrapProducts">Scrap Products</FluentButton>
 </FluentStack>
+<br/><br/>
+<FluentDivider></FluentDivider>
+<h3>Find Links</h3>
+<FluentStack Horizontal AlignItems="Center">
+    <FluentTextField Label="Enter URL" Placeholder="https://example.com" @bind-Value="findLinksUrl" Style="width: 100%; max-width: 600px;" />
+    <FluentTextField Label="Enter URL" Placeholder="xpath" @bind-Value="linkPath" ></FluentTextField>
+    <FluentButton Appearance="Appearance.Accent" @onclick="@FindUrls">Find Urls</FluentButton>
+</FluentStack>
+<FluentButton Appearance="Appearance.Accent" @onclick="@ClearSources">Delete All Sources</FluentButton>
 
 <hr/>
 <div class="scrap-results">
@@ -21,8 +30,47 @@
 
 @code {
     private string url = "https://directtrophies.com.au/product-category/sports-trophies/sports-trophies-academic/";
+    private string findLinksUrl = "";
+    private string linkPath = "//a[contains(@class, 'mega-menu-link')]";
     private StringBuilder sb = new StringBuilder();
     private string results = "No results yet... base: " + AppContext.BaseDirectory;
+
+    private async Task ClearSources()
+    {
+        await SourcesService.DeleteAllSourcesAsync();
+        results = "All sources deleted.";
+    }
+
+    private async Task FindUrls()
+    {
+        sb.Clear();
+        sb.AppendLine("<h4>Found Links:</h4>");
+        var _pages = new FindPages();
+        var urls = await _pages.ScrapeLinks(findLinksUrl, linkPath);
+        sb.AppendLine($" <br/>Links Found: {urls.Count()}");
+        var sources = new List<ScrapeSource>();
+        foreach (var link in urls)
+        {
+            sb.AppendLine($" <br/>Link: {link}");
+            results = sb.ToString();
+
+            //Add to db
+            var category = new Uri(link).Segments.Length > 2 ? new Uri(link).Segments[2].Trim('/').ToLower() : "";
+            var siteName = new Uri(link).Host.Split('.')[0];
+
+            var source = new ScrapeSource()
+            {
+                SourceName = siteName,
+                Url = link,
+                Category = category,
+                Active = true
+            };
+            sources.Add(source);
+            
+            Console.WriteLine(link);
+        }
+        await SourcesService.AddRange(sources);
+    }
 
     private async Task ScrapProducts()
     {

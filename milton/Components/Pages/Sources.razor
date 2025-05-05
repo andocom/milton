@@ -1,4 +1,4 @@
-﻿@page "/admin/sources"
+﻿@page "/sources"
 @using Microsoft.EntityFrameworkCore
 @inject ProductDbContext Db
 
@@ -12,7 +12,27 @@
 <FluentTextField @bind-Value="newSource.Category" Placeholder="Optional category" Class="mb-2" />
 <FluentButton OnClick="AddSource">Add Source</FluentButton>
 
-@if (sources == null)
+
+
+<FluentSelect TOption="string"
+    @bind-Value="selectedSource" 
+    Label="Filter by Source" 
+    Class="mb-4" 
+    Style="width: 300px;" 
+    @onchange="(args)=>FilterSources()"
+    >
+    <option value="">-- All Sources --</option>
+    @foreach (var name in sourceNames)
+    {
+        <option value="@name">@name</option>
+    }
+</FluentSelect>
+
+<FluentButton OnClick="ResetFilter" Class="mb-4">Clear Filter</FluentButton>
+
+
+
+@if (filteredSources == null)
 {
     <p>Loading...</p>
 }
@@ -29,7 +49,7 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var src in sources)
+            @foreach (var src in filteredSources)
             {
                 <tr>
                     <td>@src.SourceName</td>
@@ -49,11 +69,40 @@ else
 
 @code {
     private List<ScrapeSource>? sources;
+    private List<ScrapeSource>? filteredSources;
     private ScrapeSource newSource = new();
+    private string selectedSource = string.Empty;
+    private List<string> sourceNames = new();
+
 
     protected override async Task OnInitializedAsync()
     {
         sources = await Db.ScrapeSources.OrderBy(x => x.SourceName).ToListAsync();
+        sourceNames = await GetDistinctSourceNamesAsync(); // assume this method exist
+        filteredSources = sources; // default
+    }
+
+    private void ResetFilter()
+    {
+        selectedSource = string.Empty;
+        filteredSources = sources;
+    }
+
+    private void FilterSources()
+    {
+        if (string.IsNullOrWhiteSpace(selectedSource))
+            filteredSources = sources;
+        else
+            filteredSources = sources.Where(s => s.SourceName == selectedSource).ToList();
+    }
+
+    public async Task<List<string>> GetDistinctSourceNamesAsync()
+    {
+        return await Db.ScrapeSources
+            .Select(s => s.SourceName)
+            .Distinct()
+            .OrderBy(name => name)
+            .ToListAsync();
     }
 
     private async Task AddSource()
