@@ -1,0 +1,64 @@
+﻿@page "/products"
+@inject ProductService ProductService
+
+<h3>Product Admin</h3>
+
+<FluentButton OnClick="ToggleAddForm" Appearance="Appearance.Accent">@((showAddForm ? "Cancel" : "Add Product"))</FluentButton>
+
+@if (showAddForm)
+{
+    <EditForm Model="newProduct" OnValidSubmit="AddProductAsync">
+        <FluentTextField @bind-Value="newProduct.Name" Label="Name" />
+        <FluentTextField @bind-Value="newProduct.Sku" Label="SKU" />
+        <FluentSwitch @bind-Checked="newProduct.Active" Label="Active" />
+        <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent">Save</FluentButton>
+    </EditForm>
+}
+
+<table class="table">
+    <thead>
+        <tr><th>Name</th><th>SKU</th><th>Active</th><th>Created</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var product in products)
+        {
+            <tr>
+                <td>@product.Name</td>
+                <td>@product.Sku</td>
+                <td>@(product.Active ? "Yes" : "No")</td>
+                <td>@product.CreatedAt.ToString("yyyy-MM-dd")</td>
+                <td>
+                    <FluentButton OnClick="() => DeleteProductAsync(product.Id)" Appearance="Appearance.Outline">Delete</FluentButton>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<Product> products = new();
+    private Product newProduct = new();
+    private bool showAddForm = true;
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = await ProductService.GetAllAsync();
+    }
+
+    private async Task AddProductAsync()
+    {
+        newProduct.CreatedAt = DateTime.UtcNow;
+        await ProductService.AddAsync(newProduct);
+        products = await ProductService.GetAllAsync();
+        newProduct = new();
+        showAddForm = false;
+    }
+
+    private async Task DeleteProductAsync(int id)
+    {
+        await ProductService.DeleteAsync(id);
+        products = await ProductService.GetAllAsync();
+    }
+
+    private void ToggleAddForm() => showAddForm = !showAddForm;
+}

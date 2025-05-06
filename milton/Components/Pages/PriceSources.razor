@@ -1,0 +1,62 @@
+﻿@page "/pricesources"
+@inject PriceSourceService PriceSourceService
+
+<h3>Price Source Admin</h3>
+
+<FluentButton OnClick="ToggleAddForm" Appearance="Appearance.Accent">@((showAddForm ? "Cancel" : "Add Source"))</FluentButton>
+
+@if (showAddForm)
+{
+    <EditForm Model="newSource" OnValidSubmit="AddSourceAsync">
+        <FluentTextField @bind-Value="newSource.Name" Label="Name" />
+        <FluentSwitch @bind-Checked="newSource.Active" Label="Active" />
+        <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent">Save</FluentButton>
+    </EditForm>
+}
+
+<table class="table">
+    <thead>
+        <tr><th>Name</th><th>Active</th><th>Created</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var source in sources)
+        {
+            <tr>
+                <td>@source.Name</td>
+                <td>@(source.Active ? "Yes" : "No")</td>
+                <td>@source.CreatedAt.ToString("yyyy-MM-dd")</td>
+                <td>
+                    <FluentButton OnClick="() => DeleteSourceAsync(source.Id)" Appearance="Appearance.Outline">Delete</FluentButton>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<PriceSource> sources = new();
+    private PriceSource newSource = new();
+    private bool showAddForm = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        sources = await PriceSourceService.GetAllAsync();
+    }
+
+    private async Task AddSourceAsync()
+    {
+        newSource.CreatedAt = DateTime.UtcNow;
+        await PriceSourceService.AddAsync(newSource);
+        sources = await PriceSourceService.GetAllAsync();
+        newSource = new();
+        showAddForm = false;
+    }
+
+    private async Task DeleteSourceAsync(int id)
+    {
+        await PriceSourceService.DeleteAsync(id);
+        sources = await PriceSourceService.GetAllAsync();
+    }
+
+    private void ToggleAddForm() => showAddForm = !showAddForm;
+}

@@ -11,6 +11,10 @@ builder.Services.AddDbContext<ProductDbContext>(options =>
 builder.Services.AddScoped<ProductSnapshotService>();
 builder.Services.AddScoped<SourcesService>();
 
+builder.Services.AddScoped<PriceSnapshotService>();
+builder.Services.AddScoped<PriceSourceService>();
+builder.Services.AddScoped<ProductService>();
+
 // Add services to the container.
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();

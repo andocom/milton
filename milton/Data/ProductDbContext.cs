@@ -6,8 +6,23 @@ public class ProductDbContext : DbContext
     public DbSet<ProductSnapshot> Snapshots { get; set; }
     public DbSet<ScrapeSource> ScrapeSources { get; set; }
 
+    public DbSet<Product> Products { get; set; }
+    public DbSet<PriceSource> PriceSources { get; set; }
+    public DbSet<PriceSnapshot> PriceSnapshots { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+
+        modelBuilder.Entity<PriceSnapshot>()
+            .HasOne(p => p.Product)
+            .WithMany()
+            .HasForeignKey(p => p.ProductId);
+
+        modelBuilder.Entity<PriceSnapshot>()
+            .HasOne(p => p.PriceSource)
+            .WithMany()
+            .HasForeignKey(p => p.PriceSourceId);
+
         modelBuilder.Entity<ProductSnapshot>(entity =>
         {
             // Index for efficient lookup and duplicate protection
