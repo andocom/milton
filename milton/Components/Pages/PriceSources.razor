@@ -3,14 +3,14 @@
 
 <h3>Price Source Admin</h3>
 
-<FluentButton OnClick="ToggleAddForm" Appearance="Appearance.Accent">@((showAddForm ? "Cancel" : "Add Source"))</FluentButton>
+<MudButton OnClick="ToggleAddForm" Appearance="Appearance.Accent">@((showAddForm ? "Cancel" : "Add Source"))</MudButton>
 
 @if (showAddForm)
 {
     <EditForm Model="newSource" OnValidSubmit="AddSourceAsync">
-        <FluentTextField @bind-Value="newSource.Name" Label="Name" />
-        <FluentSwitch @bind-Checked="newSource.Active" Label="Active" />
-        <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent">Save</FluentButton>
+        <MudTextField @bind-Value="newSource.Name" Label="Name" />
+        <MudSwitch @bind-Value="newSource.Active" Label="Active" />
+        <MudButton Type="ButtonType.Submit" Appearance="Appearance.Accent">Save</MudButton>
     </EditForm>
 }
 
@@ -26,7 +26,7 @@
                 <td>@(source.Active ? "Yes" : "No")</td>
                 <td>@source.CreatedAt.ToString("yyyy-MM-dd")</td>
                 <td>
-                    <FluentButton OnClick="() => DeleteSourceAsync(source.Id)" Appearance="Appearance.Outline">Delete</FluentButton>
+                    <MudButton OnClick="() => DeleteSourceAsync(source.Id)" Appearance="Appearance.Outline">Delete</MudButton>
                 </td>
             </tr>
         }

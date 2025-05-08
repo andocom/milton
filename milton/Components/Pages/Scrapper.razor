@@ -9,19 +9,21 @@
 
 
 <h3>Scrapper</h3>
-<FluentStack Horizontal AlignItems="Center">
-    <FluentTextField Label="Enter URL" Placeholder="https://example.com" @bind-Value="url" Style="width: 100%; max-width: 600px;" />
-    <FluentButton Appearance="Appearance.Accent" @onclick="@ScrapProducts">Scrap Products</FluentButton>
-</FluentStack>
+<MudStack Horizontal AlignItems="AlignItems.Center">
+    <MudTextField Label="Enter URL" Placeholder="https://example.com" @bind-Value="url" Style="width: 100%; max-width: 600px;" />
+    <MudButton Appearance="Appearance.Accent" @onclick="@ScrapProducts">Scrap Products</MudButton>
+</MudStack>
 <br/><br/>
-<FluentDivider></FluentDivider>
+<MudDivider>
+
+</MudDivider>
 <h3>Find Links</h3>
-<FluentStack Horizontal AlignItems="Center">
-    <FluentTextField Label="Enter URL" Placeholder="https://example.com" @bind-Value="findLinksUrl" Style="width: 100%; max-width: 600px;" />
-    <FluentTextField Label="Enter URL" Placeholder="xpath" @bind-Value="linkPath" ></FluentTextField>
-    <FluentButton Appearance="Appearance.Accent" @onclick="@FindUrls">Find Urls</FluentButton>
-</FluentStack>
-<FluentButton Appearance="Appearance.Accent" @onclick="@ClearSources">Delete All Sources</FluentButton>
+<MudStack Horizontal AlignItems="AlignItems.Center">
+    <MudTextField Label="Enter URL" Placeholder="https://example.com" @bind-Value="findLinksUrl" Style="width: 100%; max-width: 600px;" />
+    <MudTextField Label="Enter URL" Placeholder="xpath" @bind-Value="linkPath"></MudTextField>
+    <MudButton Appearance="Appearance.Accent" @onclick="@FindUrls">Find Urls</MudButton>
+</MudStack>
+<MudButton Appearance="Appearance.Accent" @onclick="@ClearSources">Delete All Sources</MudButton>
 
 <hr/>
 <div class="scrap-results">

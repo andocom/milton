@@ -7,14 +7,14 @@
 
 <h2 class="text-xl font-semibold mb-4">Scrape Sources Admin</h2>
 
-<FluentTextField @bind-Value="newSource.SourceName" Placeholder="Source name (e.g. TrophiesDirect)" Class="mb-2" />
-<FluentTextField @bind-Value="newSource.Url" Placeholder="URL to scrape" Class="mb-2" />
-<FluentTextField @bind-Value="newSource.Category" Placeholder="Optional category" Class="mb-2" />
-<FluentButton OnClick="AddSource">Add Source</FluentButton>
+<MudTextField @bind-Value="newSource.SourceName" Placeholder="Source name (e.g. TrophiesDirect)" Class="mb-2" />
+<MudTextField @bind-Value="newSource.Url" Placeholder="URL to scrape" Class="mb-2" />
+<MudTextField @bind-Value="newSource.Category" Placeholder="Optional category" Class="mb-2" />
+<MudButton OnClick="AddSource">Add Source</MudButton>
 
 
 
-<FluentSelect TOption="string"
+<MudSelect TOption="string"
     @bind-Value="selectedSource" 
     Label="Filter by Source" 
     Class="mb-4" 
@@ -26,9 +26,9 @@
     {
         <option value="@name">@name</option>
     }
-</FluentSelect>
+</MudSelect>
 
-<FluentButton OnClick="ResetFilter" Class="mb-4">Clear Filter</FluentButton>
+<MudButton OnClick="ResetFilter" Class="mb-4">Clear Filter</MudButton>
 
 <div>@((MarkupString)msg)</div>
 
@@ -56,10 +56,10 @@ else
                     <td>@(string.Join("/", new Uri(src.Url).Segments.Skip(3)).TrimEnd('/'))</td>
                     <td>@src.Category</td>
                     <td>
-                        <FluentSwitch @bind-Checked="src.Active" OnChange="() => ToggleActive(src)" />
+                        <MudSwitch @bind-Value="src.Active" OnChange="() => ToggleActive(src)" />
                     </td>
                     <td>
-                        <FluentButton Appearance="Appearance.Outline" OnClick="() => DeleteSource(src.Id)">Delete</FluentButton>
+                        <MudButton Appearance="Appearance.Outline" OnClick="() => DeleteSource(src.Id)">Delete</MudButton>
                     </td>
                 </tr>
             }

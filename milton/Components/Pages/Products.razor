@@ -1,64 +1,70 @@
 ﻿@page "/products"
 @inject ProductService ProductService
 
-<h3>Product Admin</h3>
+<PageTitle>Product Admin</PageTitle>
 
-<FluentButton OnClick="ToggleAddForm" Appearance="Appearance.Accent">@((showAddForm ? "Cancel" : "Add Product"))</FluentButton>
+<h2 class="text-xl font-bold mb-4">Product Management</h2>
 
-@if (showAddForm)
-{
-    <EditForm Model="newProduct" OnValidSubmit="AddProductAsync">
-        <FluentTextField @bind-Value="newProduct.Name" Label="Name" />
-        <FluentTextField @bind-Value="newProduct.Sku" Label="SKU" />
-        <FluentSwitch @bind-Checked="newProduct.Active" Label="Active" />
-        <FluentButton Type="ButtonType.Submit" Appearance="Appearance.Accent">Save</FluentButton>
+<MudCard class="p-4 mb-6">
+    <EditForm Model="@newProduct" OnValidSubmit="CreateProduct" FormName="createForm">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <MudTextField @bind-Value="newProduct.Name" Label="Product Name" Required="true" />
+            <MudTextField @bind-Value="newProduct.Sku" Label="SKU" Required="true" />
+            <MudCheckBox @bind-Value="newProduct.Active">Active</MudCheckBox>
+        </div>
+        <MudButton Appearance="Appearance.Accent" Type="ButtonType.Submit" class="mt-4">Add Product</MudButton>
     </EditForm>
-}
-
-<table class="table">
-    <thead>
-        <tr><th>Name</th><th>SKU</th><th>Active</th><th>Created</th><th>Actions</th></tr>
-    </thead>
-    <tbody>
-        @foreach (var product in products)
-        {
+    <h3 class="text-lg font-semibold mb-2">All Products</h3>
+    <table class="w-full text-sm">
+        <thead>
             <tr>
-                <td>@product.Name</td>
-                <td>@product.Sku</td>
-                <td>@(product.Active ? "Yes" : "No")</td>
-                <td>@product.CreatedAt.ToString("yyyy-MM-dd")</td>
-                <td>
-                    <FluentButton OnClick="() => DeleteProductAsync(product.Id)" Appearance="Appearance.Outline">Delete</FluentButton>
-                </td>
+                <th class="text-left">Name</th>
+                <th class="text-left">SKU</th>
+                <th class="text-left">Active</th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (var product in products)
+            {
+                <tr>
+                    <td><MudTextField @bind-Value="product.Name" /></td>
+                    <td><MudTextField @bind-Value="product.Sku" /></td>
+                    <td><MudCheckBox @bind-Value="product.Active" /></td>
+                    <td>
+                        <MudButton Appearance="Appearance.Accent" OnClick="() => UpdateProduct(product)">Update</MudButton>
+                        <MudButton Appearance="Appearance.Stealth" OnClick="() => DeleteProduct(product.Id)">Delete</MudButton>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</MudCard>
 
 @code {
     private List<Product> products = new();
     private Product newProduct = new();
-    private bool showAddForm = true;
 
     protected override async Task OnInitializedAsync()
     {
         products = await ProductService.GetAllAsync();
     }
 
-    private async Task AddProductAsync()
+    private async Task CreateProduct()
     {
-        newProduct.CreatedAt = DateTime.UtcNow;
         await ProductService.AddAsync(newProduct);
-        products = await ProductService.GetAllAsync();
         newProduct = new();
-        showAddForm = false;
+        products = await ProductService.GetAllAsync();
     }
 
-    private async Task DeleteProductAsync(int id)
+    private async Task UpdateProduct(Product product)
+    {
+        await ProductService.UpdateAsync(product);
+    }
+
+    private async Task DeleteProduct(int id)
     {
         await ProductService.DeleteAsync(id);
         products = await ProductService.GetAllAsync();
     }
-
-    private void ToggleAddForm() => showAddForm = !showAddForm;
 }
