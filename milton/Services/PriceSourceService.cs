@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using milton.Data;
 
 public class PriceSourceService
 {
-    private readonly ProductDbContext _db;
+    private readonly ApplicationDbContext _db;
 
-    public PriceSourceService(ProductDbContext db) => _db = db;
+    public PriceSourceService(ApplicationDbContext db) => _db = db;
 
     public async Task<List<PriceSource>> GetAllAsync() =>
         await _db.PriceSources.OrderBy(s => s.Name).ToListAsync();

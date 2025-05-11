@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using milton.Data;
 
 public class ProductService
 {
-    private readonly ProductDbContext _db;
+    private readonly ApplicationDbContext _db;
 
-    public ProductService(ProductDbContext db) => _db = db;
+    public ProductService(ApplicationDbContext db) => _db = db;
 
     public async Task<List<Product>> GetAllAsync() =>
         await _db.Products.OrderBy(p => p.Name).ToListAsync();

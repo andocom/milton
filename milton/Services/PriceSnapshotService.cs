@@ -1,10 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using milton.Data;
 
 public class PriceSnapshotService
 {
-    private readonly ProductDbContext _db;
+    private readonly ApplicationDbContext _db;
 
-    public PriceSnapshotService(ProductDbContext db) => _db = db;
+    public PriceSnapshotService(ApplicationDbContext db) => _db = db;
 
     public async Task<List<PriceSnapshot>> GetAllAsync() =>
         await _db.PriceSnapshots

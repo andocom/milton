@@ -2,12 +2,13 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using milton.Data;
 
 public class SourcesService
 {
-    private readonly ProductDbContext _db;
+    private readonly ApplicationDbContext _db;
 
-    public SourcesService(ProductDbContext db)
+    public SourcesService(ApplicationDbContext db)
     {
         _db = db;
     }

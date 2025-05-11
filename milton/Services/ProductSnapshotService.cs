@@ -1,11 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
-
+using milton.Data;
 
 public class ProductSnapshotService
 {
-    private readonly ProductDbContext _db;
+    private readonly ApplicationDbContext _db;
 
-    public ProductSnapshotService(ProductDbContext db)
+    public ProductSnapshotService(ApplicationDbContext db)
     {
         _db = db;
     }
