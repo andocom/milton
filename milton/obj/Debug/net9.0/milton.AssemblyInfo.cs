@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("milton")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+75c7c5ffb297e23a2f2aa411b561f9801e38e2a0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1c264eaebebbf772c9ae04ccb9ceb77a781ef1d6")]
 [assembly: System.Reflection.AssemblyProductAttribute("milton")]
 [assembly: System.Reflection.AssemblyTitleAttribute("milton")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -181,3 +181,4 @@ C:\Users\Owner\source\repos\milton\milton\obj\Debug\net9.0\refint\milton.dll
 C:\Users\Owner\source\repos\milton\milton\obj\Debug\net9.0\milton.pdb
 C:\Users\Owner\source\repos\milton\milton\obj\Debug\net9.0\milton.genruntimeconfig.cache
 C:\Users\Owner\source\repos\milton\milton\obj\Debug\net9.0\ref\milton.dll
+C:\Users\Owner\source\repos\milton\milton\obj\Debug\net9.0\milton.sourcelink.json

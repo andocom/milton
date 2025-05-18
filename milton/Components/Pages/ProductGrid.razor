@@ -1,0 +1,55 @@
+﻿@page "/productgrid"
+
+@inject ProductService ProductService
+
+@rendermode InteractiveServer
+
+<h3>Product Grid</h3>
+
+<MudDataGrid T="Product" Items="@products" ReadOnly="false" EditMode="@DataGridEditMode.Form"
+             StartedEditingItem="@StartedEditingItem" CanceledEditingItem="@CanceledEditingItem" CommittedItemChanges="@CommittedItemChanges"
+             Bordered="true" Dense="true" EditTrigger="@DataGridEditTrigger.Manual">
+    <Columns>
+        <PropertyColumn Property="x => x.Id" Title="Id" Editable="false" />
+        <PropertyColumn Property="x => x.Sku" />
+        <PropertyColumn Property="x => x.Name" />
+        <PropertyColumn Property="x => x.CreatedAt" Format="dd/MM/yyyy" />
+        <PropertyColumn Property="x => x.Active">
+            <EditTemplate>
+                <MudSwitch T="bool" @bind-Value="context.Item.Active" Margin="@Margin.Dense" Color="@Color.Primary" />
+            </EditTemplate>
+        </PropertyColumn>
+        <TemplateColumn CellClass="d-flex justify-end">
+            <CellTemplate>
+                <MudIconButton Size="@Size.Small" Icon="@Icons.Material.Outlined.Edit" OnClick="@context.Actions.StartEditingItemAsync" />
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+
+@code {
+
+    private List<Product> products = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = await ProductService.GetAllAsync();
+    }
+
+    // events
+    void StartedEditingItem(Product item)
+    {
+        //_events.Insert(0, $"Event = StartedEditingItem, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
+    }
+
+    void CanceledEditingItem(Product item)
+    {
+        //_events.Insert(0, $"Event = CanceledEditingItem, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
+    }
+
+    void CommittedItemChanges(Product item)
+    {
+        //_events.Insert(0, $"Event = CommittedItemChanges, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
+    }
+
+}
