@@ -17,10 +17,10 @@ namespace milton.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Product>()
-                .HasOne(p => p.Product)
-                .WithMany()
-                .HasForeignKey(p => p.ProductId);
+            //modelBuilder.Entity<Product>()
+            //    .HasOne(p => p.Product)
+            //    .WithMany()
+            //    .HasForeignKey(p => p.ProductId);
 
             modelBuilder.Entity<PriceSnapshot>()
                 .HasOne(p => p.Product)
