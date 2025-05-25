@@ -38,10 +38,10 @@ builder.Services.AddIdentityCore<ApplicationUser>(options => options.SignIn.Requ
     .AddSignInManager()
     .AddDefaultTokenProviders();
 
-builder.Services.AddScoped<ProductSnapshotService>();
-builder.Services.AddScoped<SourcesService>();
-builder.Services.AddScoped<PriceSnapshotService>();
-builder.Services.AddScoped<PriceSourceService>();
+//builder.Services.AddScoped<ProductSnapshotService>();
+//builder.Services.AddScoped<SourcesService>();
+//builder.Services.AddScoped<PriceSnapshotService>();
+//builder.Services.AddScoped<PriceSourceService>();
 builder.Services.AddScoped<ProductService>();
 
 builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();

@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using milton.Data;
+using milton.Models.CompetitorPrices;
 
 public class ProductService
 {
@@ -14,7 +15,7 @@ public class ProductService
         await _db.Products.FindAsync(id);
 
     public async Task<Product?> GetBySkuAsync(string sku) =>
-        await _db.Products.FirstOrDefaultAsync(p => p.Sku == sku);
+        await _db.Products.FirstOrDefaultAsync(p => p.SKU == sku);
 
     public async Task AddAsync(Product product)
     {

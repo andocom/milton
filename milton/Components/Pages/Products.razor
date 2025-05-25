@@ -1,5 +1,6 @@
 ﻿@page "/products"
 @inject ProductService ProductService
+@using milton.Models.CompetitorPrices;
 
 @rendermode InteractiveServer
 
@@ -18,7 +19,7 @@
                         <MudTextField @bind-Value="newProduct.Name" Label="Product Name" Required="true" />
                     </MudItem>
                     <MudItem md="3">
-                        <MudTextField @bind-Value="newProduct.Sku" Label="SKU" Required="true" />
+                        <MudTextField @bind-Value="newProduct.SKU" Label="SKU" Required="true" />
                     </MudItem>
                     <MudItem md="3">
                         <MudCheckBox @bind-Value="newProduct.Active">Active</MudCheckBox>
@@ -44,7 +45,7 @@
                 {
                     <tr>
                         <td><MudTextField @bind-Value="product.Name" /></td>
-                        <td><MudTextField @bind-Value="product.Sku" /></td>
+                        <td><MudTextField @bind-Value="product.SKU" /></td>
                         <td><MudCheckBox @bind-Value="product.Active" /></td>
                         <td>
                             <MudButton Appearance="Appearance.Accent" OnClick="() => UpdateProduct(product)">Update</MudButton>
@@ -58,6 +59,7 @@
 </MudGrid>
 
 @code {
+    
     private List<Product> products = new();
     private Product newProduct = new();
     private string log = "Logging...";
