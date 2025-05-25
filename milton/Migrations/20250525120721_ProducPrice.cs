@@ -5,7 +5,7 @@
 namespace milton.Migrations
 {
     /// <inheritdoc />
-    public partial class PriceDecimal : Migration
+    public partial class ProducPrice : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

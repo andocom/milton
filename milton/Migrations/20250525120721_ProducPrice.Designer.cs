@@ -12,8 +12,8 @@ using milton.Data;
 namespace milton.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250525042638_PriceDecimal")]
-    partial class PriceDecimal
+    [Migration("20250525120721_ProducPrice")]
+    partial class ProducPrice
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

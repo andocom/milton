@@ -28,6 +28,9 @@ namespace milton.Data
             // Product
             modelBuilder.Entity<Product>()
                 .HasKey(p => p.Id);
+            modelBuilder.Entity<Product>()
+                .Property(ps => ps.Price)
+                .HasColumnType("decimal(18,2)");
 
             // Competitor
             modelBuilder.Entity<Competitor>()
