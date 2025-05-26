@@ -10,6 +10,5 @@
         public int SnapshotId { get; set; }
         public Snapshot Snapshot { get; set; }
         public decimal Price { get; set; }
-        public ICollection<ProductSnapshot> Snapshots { get; set; }
     }
 }

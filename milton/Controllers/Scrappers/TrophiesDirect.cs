@@ -5,28 +5,7 @@
 //using System.Text.Json;
 //using System.Threading.Tasks;
 //using HtmlAgilityPack;
-
-
-
-//public class TrophiesDirectProductData
-//{
-//    public string Log { get; set; }
-//    public int internal_id { get; set; }
-//    public int item_id { get; set; }
-//    public string item_name { get; set; }
-//    public string sku { get; set; }
-//    public decimal price { get; set; }
-//    public object stocklevel { get; set; }  // could be null
-//    public string stockstatus { get; set; }
-//    public string google_business_vertical { get; set; }
-//    public string item_category { get; set; }
-//    public int id { get; set; }
-//    public string productlink { get; set; }
-//    public string item_list_name { get; set; }
-//    public int index { get; set; }
-//    public string product_type { get; set; }
-//    public string item_brand { get; set; }
-//}
+//using milton.Models.CompetitorPrices;
 
 //public class TrophiesDirect
 //{

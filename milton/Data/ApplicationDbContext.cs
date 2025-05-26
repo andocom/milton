@@ -7,13 +7,6 @@ namespace milton.Data
 {
     public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : IdentityDbContext<ApplicationUser>(options)
     {
-
-        //public DbSet<ProductSnapshot> Snapshots { get; set; }
-        //public DbSet<ScrapeSource> ScrapeSources { get; set; }
-        //public DbSet<Product> Products { get; set; }
-        //public DbSet<PriceSource> PriceSources { get; set; }
-        //public DbSet<PriceSnapshot> PriceSnapshots { get; set; }
-
         public DbSet<Competitor> Competitors { get; set; }
         public DbSet<CompetitorProduct> CompetitorProducts { get; set; }
         public DbSet<Product> Products { get; set; }
