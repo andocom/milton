@@ -44,7 +44,10 @@ builder.Services.AddScoped<SnapshotService>();
 builder.Services.AddScoped<ProductSnapshotService>();
 builder.Services.AddScoped<CompetitorProductService>();
 
-builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+// Add services to the container.
+builder.Services.AddRazorComponents()
+    .AddInteractiveServerComponents();
+builder.Services.AddFluentUIComponents();
 
 var app = builder.Build();
 
