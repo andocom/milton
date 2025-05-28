@@ -1,0 +1,93 @@
+﻿@page "/competitors"
+@using milton.Models.CompetitorPrices;
+@using milton.Data;
+
+@inject CompetitorService CompetitorService
+
+@rendermode InteractiveServer
+
+<MudDataGrid T="Competitor" Items="@competitors" ReadOnly="false" EditMode="@DataGridEditMode.Form" QuickFilter="@_quickFilter"
+             StartedEditingItem="@StartedEditingItem" CanceledEditingItem="@CanceledEditingItem" CommittedItemChanges="@CommittedItemChanges"
+             Bordered="true" Dense="true" EditTrigger="@DataGridEditTrigger.Manual">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Manage Competitors</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Variant="Variant.Outlined" Class="mt-0"></MudTextField>
+        <MudButton OnClick="AddNew" Size="@Size.Small" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary">Add New</MudButton>
+    </ToolBarContent>
+    <Columns>
+        <PropertyColumn Property="x => x.Name" />
+        <PropertyColumn Property="x => x.BaseUrl" />
+        <PropertyColumn Property="x => x.CreatedAt" Format="dd/MM/yyyy" />
+        <PropertyColumn Property="x => x.Active">
+            <EditTemplate>
+                <MudSwitch T="bool" @bind-Value="context.Item.Active" Margin="@Margin.Dense" Color="@Color.Primary" />
+            </EditTemplate>
+        </PropertyColumn>
+        <TemplateColumn CellClass="d-flex justify-end">
+            <CellTemplate>
+                <MudIconButton Size="@Size.Small" Variant="Variant.Filled" Color="Color.Dark" Icon="@Icons.Material.Filled.Edit" OnClick="@context.Actions.StartEditingItemAsync" />
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+
+@code {
+
+    private List<Competitor> competitors = new();
+    private string _searchString = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        competitors = await CompetitorService.GetAllAsync();
+    }
+
+    // events
+    void StartedEditingItem(Competitor item)
+    {
+        //_events.Insert(0, $"Event = StartedEditingItem, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
+    }
+
+    void CanceledEditingItem(Competitor item)
+    {
+        //_events.Insert(0, $"Event = CanceledEditingItem, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
+    }
+
+    private async Task CommittedItemChanges(Competitor item)
+    {
+        await CompetitorService.UpdateAsync(item);
+        competitors = await CompetitorService.GetAllAsync();
+        //_events.Insert(0, $"Event = CommittedItemChanges, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
+    }
+
+    private async Task AddNew()
+    {
+        var newCompetitor = new Competitor
+        {
+            Id = 0,
+            Name = "New Competitor",
+            BaseUrl = "https://www.competitor.com",
+            Active = false,
+            CreatedAt = DateTime.Now
+        };
+        await CompetitorService.AddAsync(newCompetitor);
+        competitors = await CompetitorService.GetAllAsync();
+    }
+
+    // quick filter - filter globally across multiple columns with the same input
+    private Func<Competitor, bool> _quickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        if (x.BaseUrl.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    };
+
+}

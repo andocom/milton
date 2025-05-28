@@ -1,38 +1,70 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using milton.Models.CompetitorPrices;
+using Microsoft.EntityFrameworkCore;
 
-
-public class ProductSnapshotService
+namespace milton.Data
 {
-    private readonly ProductDbContext _db;
-
-    public ProductSnapshotService(ProductDbContext db)
+    public class ProductSnapshotService
     {
-        _db = db;
-    }
+        private readonly ApplicationDbContext _db;
 
-    public async Task SaveSnapshotsAsync(List<ProductSnapshot> snapshots)
-    {
-        if (snapshots == null || snapshots.Count == 0)
-            return;
+        public ProductSnapshotService(ApplicationDbContext db) => _db = db;
 
-        var snapshotDate = snapshots.First().SnapshotDate.Date;
-        var source = snapshots.First().Source;
-
-        // Check for existing entries for this source + date + SKU
-        var existingKeys = await _db.Snapshots
-            .Where(p => p.SnapshotDate.Date == snapshotDate && p.Source == source)
-            .Select(p => p.SKU)
-            .ToListAsync();
-
-        var newSnapshots = snapshots
-            .Where(s => !existingKeys.Contains(s.SKU))
-            .ToList();
-
-        if (newSnapshots.Count > 0)
+        // Create
+        public async Task<ProductSnapshot> AddAsync(ProductSnapshot snapshot)
         {
-            await _db.Snapshots.AddRangeAsync(newSnapshots);
+            _db.ProductSnapshots.Add(snapshot);
             await _db.SaveChangesAsync();
+            return snapshot;
         }
+
+        // Read All
+        public async Task<List<ProductSnapshot>> GetAllAsync()
+        {
+            return await _db.ProductSnapshots
+                .Include(ps => ps.Product)
+                .Include(ps => ps.Competitor)
+                .Include(ps => ps.Snapshot)
+                .ToListAsync();
+        }
+
+        // Read by Id
+        public async Task<ProductSnapshot?> GetByIdAsync(int id)
+        {
+            return await _db.ProductSnapshots
+                .Include(ps => ps.Product)
+                .Include(ps => ps.Competitor)
+                .Include(ps => ps.Snapshot)
+                .FirstOrDefaultAsync(ps => ps.Id == id);
+        }
+
+        // Update
+        public async Task<bool> UpdateAsync(ProductSnapshot updated)
+        {
+            var existing = await _db.ProductSnapshots.FindAsync(updated.Id);
+            if (existing == null) return false;
+
+            existing.ProductId = updated.ProductId;
+            existing.CompetitorId = updated.CompetitorId;
+            existing.SnapshotId = updated.SnapshotId;
+            existing.Price = updated.Price;
+
+            await _db.SaveChangesAsync();
+            return true;
+        }
+
+        // Delete
+        public async Task DeleteAsync(int id)
+        {
+            var productSnapshot = await _db.ProductSnapshots.FindAsync(id);
+            if (productSnapshot != null)
+            {
+                _db.ProductSnapshots.Remove(productSnapshot);
+                await _db.SaveChangesAsync();
+            }
+        }
+
     }
 
 }
+
+

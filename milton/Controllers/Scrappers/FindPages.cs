@@ -19,7 +19,7 @@ public class FindPages
 
     public async Task<List<string>> ScrapeLinks(string url, string linkPath)
     {
-        var products = new List<ProductSnapshot>();
+        //var products = new List<ProductSnapshot>();
 
         var html = await _httpClient.GetStringAsync(url);
         var doc = new HtmlDocument();

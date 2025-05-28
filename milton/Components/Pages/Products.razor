@@ -1,0 +1,96 @@
+﻿@page "/products"
+@inject ProductService ProductService
+@using milton.Models.CompetitorPrices;
+@using milton.Data;
+
+@rendermode InteractiveServer
+
+<PageTitle>Product Admin</PageTitle>
+
+<h2 class="text-xl font-bold mb-4">Product Management</h2>
+<div>@((MarkupString)log)</div>
+
+
+<MudGrid Spacing="4">
+    <MudItem md="12">
+        <MudPaper Class="pa-16 ma-2" Elevation="2">
+            <EditForm Model="@newProduct" method="post" OnSubmit="CreateProduct" FormName="createForm">
+                <MudGrid Spacing="2">
+                    <MudItem md="3">
+                        <MudTextField @bind-Value="newProduct.Name" Label="Product Name" Required="true" />
+                    </MudItem>
+                    <MudItem md="3">
+                        <MudTextField @bind-Value="newProduct.SKU" Label="SKU" Required="true" />
+                    </MudItem>
+                    <MudItem md="3">
+                        <MudCheckBox @bind-Value="newProduct.Active">Active</MudCheckBox>
+                    </MudItem>
+                    <MudItem md="3">
+                        <MudButton Color="Color.Primary" OnClick="CreateProduct" class="mt-4">Add Product</MudButton>
+                    </MudItem>
+                </MudGrid>
+            </EditForm>
+        </MudPaper>
+        <h3 class="text-lg font-semibold mb-2">All Products</h3>
+        <table class="table table-striped table-bordered text-sm">
+            <thead>
+                <tr>
+                    <th class="text-left">Name</th>
+                    <th class="text-left">SKU</th>
+                    <th class="text-left">Active</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in products)
+                {
+                    <tr>
+                        <td><MudTextField @bind-Value="product.Name" /></td>
+                        <td><MudTextField @bind-Value="product.SKU" /></td>
+                        <td><MudCheckBox @bind-Value="product.Active" /></td>
+                        <td>
+                            <MudButton Appearance="Appearance.Accent" OnClick="() => UpdateProduct(product)">Update</MudButton>
+                            <MudButton Appearance="Appearance.Stealth" OnClick="() => DeleteProduct(product.Id)">Delete</MudButton>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </MudItem>
+</MudGrid>
+
+@code {
+    
+    private List<Product> products = new();
+    private Product newProduct = new();
+    private string log = "Logging...";
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = await ProductService.GetAllAsync();
+    }
+
+    private void Test()
+    {
+        log = "Test button clicked!";
+    }
+
+    private async Task CreateProduct()
+    {
+        log = "Creating product: " + newProduct.Name;
+        await ProductService.AddAsync(newProduct);
+        newProduct = new();
+        products = await ProductService.GetAllAsync();
+    }
+
+    private async Task UpdateProduct(Product product)
+    {
+        await ProductService.UpdateAsync(product);
+    }
+
+    private async Task DeleteProduct(int id)
+    {
+        await ProductService.DeleteAsync(id);
+        products = await ProductService.GetAllAsync();
+    }
+}

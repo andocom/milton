@@ -1,0 +1,98 @@
+﻿@page "/productgrid"
+@using milton.Models.CompetitorPrices;
+@using milton.Data;
+
+@inject ProductService ProductService
+
+@rendermode InteractiveServer
+
+<h3>Product Grid</h3>
+
+<MudDataGrid T="Product" Items="@products" ReadOnly="false" EditMode="@DataGridEditMode.Form" QuickFilter="@_quickFilter"
+StartedEditingItem="@StartedEditingItem" CanceledEditingItem="@CanceledEditingItem" CommittedItemChanges="@CommittedItemChanges"
+Bordered="true" Dense="true" EditTrigger="@DataGridEditTrigger.Manual">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Manage Products</MudText>
+        <MudSpacer />
+        <MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+                      AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Variant="Variant.Outlined" Class="mt-0"></MudTextField>
+        <MudButton OnClick="AddNew" Size="@Size.Small" Variant="Variant.Filled" StartIcon="@Icons.Material.Filled.Add" Color="Color.Primary">Add New</MudButton>
+    </ToolBarContent>
+    <Columns>
+        @* <PropertyColumn Property="x => x.Id" Title="Id" Editable="false" /> *@
+        <PropertyColumn Property="x => x.SKU" />
+        <PropertyColumn Property="x => x.Name" />
+        <PropertyColumn Property="x => x.Price" Format="C" /> 
+        <PropertyColumn Property="x => x.CreatedAt" Format="dd/MM/yyyy" />
+        <PropertyColumn Property="x => x.Active">
+            <EditTemplate>
+                <MudSwitch T="bool" @bind-Value="context.Item.Active" Margin="@Margin.Dense" Color="@Color.Primary" />
+            </EditTemplate>
+        </PropertyColumn>
+        <TemplateColumn CellClass="d-flex justify-end">
+            <CellTemplate>
+                <MudIconButton Size="@Size.Small" Variant="Variant.Filled" Color="Color.Dark" Icon="@Icons.Material.Filled.Edit" OnClick="@context.Actions.StartEditingItemAsync" />
+            </CellTemplate>
+        </TemplateColumn>
+    </Columns>
+</MudDataGrid>
+
+@code {
+
+    private List<Product> products = new();
+    private string _searchString = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = await ProductService.GetAllAsync();
+    }
+
+    // events
+    void StartedEditingItem(Product item)
+    {
+        //_events.Insert(0, $"Event = StartedEditingItem, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
+    }
+
+    void CanceledEditingItem(Product item)
+    {
+        //_events.Insert(0, $"Event = CanceledEditingItem, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
+    }
+
+    private async Task CommittedItemChanges(Product item)
+    {
+        await ProductService.UpdateAsync(item);
+        products = await ProductService.GetAllAsync();
+        //_events.Insert(0, $"Event = CommittedItemChanges, Data = {System.Text.Json.JsonSerializer.Serialize(item)}");
+    }
+
+    private async Task AddNew()
+    {
+        var newProduct = new Product
+            {
+                Id = 0,
+                Name = "New Product",
+                SKU = "SKU-" + DateTime.Now.Ticks,
+                Price = 0.0m,
+                Active = false,
+                CreatedAt = DateTime.Now
+            };
+        await ProductService.AddAsync(newProduct);
+        products = await ProductService.GetAllAsync();
+    }
+
+    // quick filter - filter globally across multiple columns with the same input
+    private Func<Product, bool> _quickFilter => x =>
+    {
+        if (string.IsNullOrWhiteSpace(_searchString))
+            return true;
+
+        if (x.SKU.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        if (x.Name.Contains(_searchString, StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return false;
+    };
+
+}

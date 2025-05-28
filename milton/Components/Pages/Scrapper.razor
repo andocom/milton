@@ -1,7 +1,5 @@
 ﻿@page "/scrapper"
 @using System.Text
-@inject ProductSnapshotService SnapshotService
-@inject SourcesService SourcesService
 
 @* @attribute [StreamRendering] *@
 @rendermode InteractiveServer
@@ -9,19 +7,21 @@
 
 
 <h3>Scrapper</h3>
-<FluentStack Horizontal AlignItems="Center">
-    <FluentTextField Label="Enter URL" Placeholder="https://example.com" @bind-Value="url" Style="width: 100%; max-width: 600px;" />
-    <FluentButton Appearance="Appearance.Accent" @onclick="@ScrapProducts">Scrap Products</FluentButton>
-</FluentStack>
+<MudStack Horizontal AlignItems="AlignItems.Center">
+    <MudTextField Label="Enter URL" Placeholder="https://example.com" @bind-Value="url" Style="width: 100%; max-width: 600px;" />
+    <MudButton Appearance="Appearance.Accent" @onclick="@ScrapProducts">Scrap Products</MudButton>
+</MudStack>
 <br/><br/>
-<FluentDivider></FluentDivider>
+<MudDivider>
+
+</MudDivider>
 <h3>Find Links</h3>
-<FluentStack Horizontal AlignItems="Center">
-    <FluentTextField Label="Enter URL" Placeholder="https://example.com" @bind-Value="findLinksUrl" Style="width: 100%; max-width: 600px;" />
-    <FluentTextField Label="Enter URL" Placeholder="xpath" @bind-Value="linkPath" ></FluentTextField>
-    <FluentButton Appearance="Appearance.Accent" @onclick="@FindUrls">Find Urls</FluentButton>
-</FluentStack>
-<FluentButton Appearance="Appearance.Accent" @onclick="@ClearSources">Delete All Sources</FluentButton>
+<MudStack Horizontal AlignItems="AlignItems.Center">
+    <MudTextField Label="Enter URL" Placeholder="https://example.com" @bind-Value="findLinksUrl" Style="width: 100%; max-width: 600px;" />
+    <MudTextField Label="Enter URL" Placeholder="xpath" @bind-Value="linkPath"></MudTextField>
+    <MudButton Appearance="Appearance.Accent" @onclick="@FindUrls">Find Urls</MudButton>
+</MudStack>
+<MudButton Appearance="Appearance.Accent" @onclick="@ClearSources">Delete All Sources</MudButton>
 
 <hr/>
 <div class="scrap-results">
@@ -37,7 +37,7 @@
 
     private async Task ClearSources()
     {
-        await SourcesService.DeleteAllSourcesAsync();
+        //await SourcesService.DeleteAllSourcesAsync();
         results = "All sources deleted.";
     }
 
@@ -45,54 +45,54 @@
     {
         sb.Clear();
         sb.AppendLine("<h4>Found Links:</h4>");
-        var _pages = new FindPages();
-        var urls = await _pages.ScrapeLinks(findLinksUrl, linkPath);
-        sb.AppendLine($" <br/>Links Found: {urls.Count()}");
-        var sources = new List<ScrapeSource>();
-        foreach (var link in urls)
-        {
-            sb.AppendLine($" <br/>Link: {link}");
-            results = sb.ToString();
+        // var _pages = new FindPages();
+        // var urls = await _pages.ScrapeLinks(findLinksUrl, linkPath);
+        // sb.AppendLine($" <br/>Links Found: {urls.Count()}");
+        // var sources = new List<ScrapeSource>();
+        // foreach (var link in urls)
+        // {
+        //     sb.AppendLine($" <br/>Link: {link}");
+        //     results = sb.ToString();
 
-            //Add to db
-            var category = new Uri(link).Segments.Length > 2 ? new Uri(link).Segments[2].Trim('/').ToLower() : "";
-            var siteName = new Uri(link).Host.Split('.')[0];
+        //     //Add to db
+        //     var category = new Uri(link).Segments.Length > 2 ? new Uri(link).Segments[2].Trim('/').ToLower() : "";
+        //     var siteName = new Uri(link).Host.Split('.')[0];
 
-            var source = new ScrapeSource()
-            {
-                SourceName = siteName,
-                Url = link,
-                Category = category,
-                Active = true
-            };
-            sources.Add(source);
+        //     var source = new ScrapeSource()
+        //     {
+        //         SourceName = siteName,
+        //         Url = link,
+        //         Category = category,
+        //         Active = true
+        //     };
+        //     sources.Add(source);
             
-            Console.WriteLine(link);
-        }
-        await SourcesService.AddRange(sources);
+        //     Console.WriteLine(link);
+        // }
+        // await SourcesService.AddRange(sources);
     }
 
     private async Task ScrapProducts()
     {
         sb.Clear();
         sb.AppendLine("<h4>Scraped Products:</h4>");
-        var scraper = new TrophiesDirect(SnapshotService);
-        var products = await scraper.ScrapeProductsAsync(url);
+        // var scraper = new TrophiesDirect(SnapshotService);
+        // var products = await scraper.ScrapeProductsAsync(url);
 
-        sb.AppendLine($" <br/>Products Found: {products.Count()}");
-        //var sb = new StringBuilder();
-        foreach (var product in products)
-        {
-            //sb.AppendLine("<br/>" + product.Log);
-            sb.AppendLine($" <br/>Name: {product.Name}");
-            sb.AppendLine($" SKU: {product.SKU}");
-            sb.AppendLine($" Price: {product.Price.ToString("C")}");
-            //SimpleLogger.Log($"Name: {product.item_name} sku: {product.sku} price: {product.price.ToString("C")}");
-            results = sb.ToString();
-            Console.WriteLine(product);
-        }
-        SimpleLogger.Log($"Products Found: {products.Count()}");
-        SimpleLogger.Log($"Results: {results}");
+        // sb.AppendLine($" <br/>Products Found: {products.Count()}");
+        // //var sb = new StringBuilder();
+        // foreach (var product in products)
+        // {
+        //     //sb.AppendLine("<br/>" + product.Log);
+        //     sb.AppendLine($" <br/>Name: {product.Name}");
+        //     sb.AppendLine($" SKU: {product.SKU}");
+        //     sb.AppendLine($" Price: {product.Price.ToString("C")}");
+        //     //SimpleLogger.Log($"Name: {product.item_name} sku: {product.sku} price: {product.price.ToString("C")}");
+        //     results = sb.ToString();
+        //     Console.WriteLine(product);
+        // }
+        // SimpleLogger.Log($"Products Found: {products.Count()}");
+        // SimpleLogger.Log($"Results: {results}");
     } 
 
 }
