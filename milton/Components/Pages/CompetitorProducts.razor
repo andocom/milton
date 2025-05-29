@@ -1,4 +1,4 @@
-﻿@page "/competitor-products"
+@page "/competitor-products"
 @using milton.Models.CompetitorPrices;
 @using milton.Data;
 
@@ -6,8 +6,11 @@
 @inject ProductService ProductService
 @inject CompetitorService CompetitorService
 
-<MudPaper Class="p-4">
-    <MudText Typo="Typo.h5">Competitor SKUs</MudText>
+@rendermode InteractiveServer
+
+<MudText Typo="Typo.h3">Competitor SKUs</MudText>
+
+<MudPaper Class="p-1">
 
     @if (products == null)
     {
@@ -19,20 +22,22 @@
         {
             <MudExpansionPanels>
                 <MudExpansionPanel Text="@product.Name">
-                    @foreach (var competitor in competitors)
-                    {
-                        var compSku = GetCompetitorSku(product.Id, competitor.Id);
+                    <div class="d-flex flex-row flex-wrap gap-1">
+                        @foreach (var competitor in competitors)
+                        {
+                            var compSku = GetCompetitorSku(product.Id, competitor.Id);
+                            <div class="d-flex align-items-center">
+                                <MudTextField @bind-Value="compSku.CompetitorSKU"
+                                              Label="@competitor.Name"
+                                              Immediate="true"
+                                              Margin="Margin.Dense"
+                                              Variant="Variant.Outlined"
+                                              OnBlur="() => SaveSku(compSku)"
+                                              Style="width: 150px;" />
 
-                        <MudTextField @bind-Value="compSku.CompetitorSKU"
-                                      Label="@competitor.Name"
-                                      Immediate="true"
-                                      Class="mb-2"
-                                      Style="width: 300px;" />
-
-                        <MudButton Variant="Variant.Filled" OnClick="() => SaveSku(compSku)">
-                            Save
-                        </MudButton>
-                    }
+                            </div>
+                        }
+                    </div>
                 </MudExpansionPanel>
             </MudExpansionPanels>
         }
@@ -41,42 +46,42 @@
 
 @code {
 
-List<Product> products;
-List<Competitor> competitors;
-List<CompetitorProduct> competitorProducts;
+    List<Product> products;
+    List<Competitor> competitors;
+    List<CompetitorProduct> competitorProducts;
 
-protected override async Task OnInitializedAsync()
-{
-    products = await ProductService.GetAllAsync();
-    competitors = await CompetitorService.GetAllAsync();
-    competitorProducts = await CompetitorProductService.GetAllAsync();
-}
-
-CompetitorProduct GetCompetitorSku(int productId, int competitorId)
-{
-    var existing = competitorProducts
-        .FirstOrDefault(x => x.ProductId == productId && x.CompetitorId == competitorId);
-
-    if (existing == null)
+    protected override async Task OnInitializedAsync()
     {
-        existing = new CompetitorProduct
-        {
-            ProductId = productId,
-            CompetitorId = competitorId,
-            CompetitorSKU = ""
-        };
-        competitorProducts.Add(existing);
+        products = await ProductService.GetAllAsync();
+        competitors = await CompetitorService.GetAllAsync();
+        competitorProducts = await CompetitorProductService.GetAllAsync();
     }
 
-    return existing;
-}
+    CompetitorProduct GetCompetitorSku(int productId, int competitorId)
+    {
+        var existing = competitorProducts
+            .FirstOrDefault(x => x.ProductId == productId && x.CompetitorId == competitorId);
 
-async Task SaveSku(CompetitorProduct cp)
-{
-    if (cp.Id == 0)
-        await CompetitorProductService.AddAsync(cp);
-    else
-        await CompetitorProductService.UpdateAsync(cp);
-}
+        if (existing == null)
+        {
+            existing = new CompetitorProduct
+                {
+                    ProductId = productId,
+                    CompetitorId = competitorId,
+                    CompetitorSKU = ""
+                };
+            competitorProducts.Add(existing);
+        }
+
+        return existing;
+    }
+
+    async Task SaveSku(CompetitorProduct cp)
+    {
+        if (cp.Id == 0)
+            await CompetitorProductService.AddAsync(cp);
+        else
+            await CompetitorProductService.UpdateAsync(cp);
+    }
 
 }
