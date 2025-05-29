@@ -1,4 +1,0 @@
-wwwroot\favicon.ico
-wwwroot\log.txt
-C:\Users\Owner\source\repos\andocom\milton\milton\wwwroot\favicon.ico
-C:\Users\Owner\source\repos\andocom\milton\milton\wwwroot\log.txt
