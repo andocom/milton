@@ -11,3 +11,5 @@ Debug/
 *.suo
 *.userosscache
 *.sln.docstates
+/milton/bin/
+/milton/obj/
