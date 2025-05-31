@@ -1,4 +1,6 @@
-﻿namespace milton.Models.CompetitorPrices
+﻿using System.Text.Json.Serialization;
+
+namespace milton.Models.CompetitorPrices
 {
     public class Competitor
     {
