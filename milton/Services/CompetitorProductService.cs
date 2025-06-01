@@ -35,6 +35,34 @@ namespace milton.Data
                 .FirstOrDefaultAsync(ps => ps.Id == id);
         }
 
+        public async Task UpsertAsync(int productId, int competitorId, string sku)
+        {
+            var existing = await _db.CompetitorProducts
+                .FirstOrDefaultAsync(cp => cp.ProductId == productId && cp.CompetitorId == competitorId);
+
+            if (existing != null)
+            {
+                if (existing.CompetitorSKU != sku)
+                {
+                    existing.CompetitorSKU = sku;
+                    _db.CompetitorProducts.Update(existing);
+                }
+            }
+            else
+            {
+                var newRecord = new CompetitorProduct
+                {
+                    ProductId = productId,
+                    CompetitorId = competitorId,
+                    CompetitorSKU = sku
+                };
+                _db.CompetitorProducts.Add(newRecord);
+            }
+
+            await _db.SaveChangesAsync();
+        }
+
+
         // Update
         public async Task<bool> UpdateAsync(CompetitorProduct updated)
         {

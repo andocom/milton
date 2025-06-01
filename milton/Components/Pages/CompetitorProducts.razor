@@ -10,7 +10,7 @@
 
 <MudText Typo="Typo.h3">Competitor SKUs</MudText>
 
-<MudPaper Class="p-1">
+@* <MudPaper Class="p-1">
 
     @if (products == null)
     {
@@ -42,46 +42,126 @@
             </MudExpansionPanels>
         }
     }
-</MudPaper>
+</MudPaper> *@
+
+<MudTable Items="@Products" Dense="true" Hover="true" FixedHeader="true" Elevation="0" Class="mud-elevation-0" Style="max-height: 600px;">
+    <HeaderContent>
+        <MudTh>Product</MudTh>
+        @foreach (var comp in Competitors)
+        {
+            <MudTh>@comp.Name</MudTh>
+        }
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>@context.Name</MudTd>
+        @foreach (var comp in Competitors)
+        {
+            <MudTd>
+                <MudTextField @bind-Value="SkuMap[(context.Id, comp.Id)]"
+                Margin="Margin.Dense"
+                Variant="Variant.Outlined"
+                Style="width: 100px;"
+                OnBlur="@((FocusEventArgs _) => SaveSkuAsync(context.Id, comp.Id))" />
+            </MudTd>
+        }
+    </RowTemplate>
+</MudTable>
+
 
 @code {
 
-    List<Product> products;
-    List<Competitor> competitors;
-    List<CompetitorProduct> competitorProducts;
+    private List<Product> Products = new();
+    private List<Competitor> Competitors = new();
+    private Dictionary<(int ProductId, int CompetitorId), string> SkuMap = new();
 
     protected override async Task OnInitializedAsync()
     {
-        products = await ProductService.GetAllAsync();
-        competitors = await CompetitorService.GetAllAsync();
-        competitorProducts = await CompetitorProductService.GetAllAsync();
+        await LoadSkusAsync();
     }
 
-    CompetitorProduct GetCompetitorSku(int productId, int competitorId)
+    // Load this in OnInitializedAsync or wherever you're loading data
+    private async Task LoadSkusAsync()
     {
-        var existing = competitorProducts
-            .FirstOrDefault(x => x.ProductId == productId && x.CompetitorId == competitorId);
+        // Load your Products and Competitors
+        Products = await ProductService.GetAllAsync();
+        Competitors = await CompetitorService.GetAllAsync();
 
-        if (existing == null)
+        // Preload SKUs from CompetitorProduct table (or similar)
+        var allSkus = await CompetitorProductService.GetAllAsync(); // Returns productId, competitorId, sku
+
+        SkuMap = allSkus.ToDictionary(
+            x => (x.ProductId, x.CompetitorId),
+            x => x.CompetitorSKU ?? ""
+        );
+
+        // Ensure all combinations are present so bindings don't crash
+        foreach (var p in Products)
         {
-            existing = new CompetitorProduct
-                {
-                    ProductId = productId,
-                    CompetitorId = competitorId,
-                    CompetitorSKU = ""
-                };
-            competitorProducts.Add(existing);
+            foreach (var c in Competitors)
+            {
+                var key = (p.Id, c.Id);
+                if (!SkuMap.ContainsKey(key))
+                    SkuMap[key] = "";
+            }
         }
-
-        return existing;
     }
 
-    async Task SaveSku(CompetitorProduct cp)
+    private Dictionary<(int, int), string> OriginalSkuMap = new();
+
+    private async Task SaveSkuAsync(int productId, int competitorId)
     {
-        if (cp.Id == 0)
-            await CompetitorProductService.AddAsync(cp);
-        else
-            await CompetitorProductService.UpdateAsync(cp);
+        var key = (productId, competitorId);
+        var currentSKU = SkuMap[key];
+        var original = OriginalSkuMap.TryGetValue(key, out var o) ? o : null;
+
+        if (currentSKU != original)
+        {
+            await CompetitorProductService.UpsertAsync(productId, competitorId, currentSKU);
+            OriginalSkuMap[key] = currentSKU;
+        }
     }
+
+
+
+
+
+
+    // List<Product> Products;
+    // List<Competitor> Competitors;
+    // List<CompetitorProduct> competitorProducts;
+
+    // protected override async Task OnInitializedAsync()
+    // {
+    //     Products = await ProductService.GetAllAsync();
+    //     Competitors = await CompetitorService.GetAllAsync();
+    //     competitorProducts = await CompetitorProductService.GetAllAsync();
+    // }
+
+    // CompetitorProduct GetCompetitorSku(int productId, int competitorId)
+    // {
+    //     var existing = competitorProducts
+    //         .FirstOrDefault(x => x.ProductId == productId && x.CompetitorId == competitorId);
+
+    //     if (existing == null)
+    //     {
+    //         existing = new CompetitorProduct
+    //             {
+    //                 ProductId = productId,
+    //                 CompetitorId = competitorId,
+    //                 CompetitorSKU = ""
+    //             };
+    //         competitorProducts.Add(existing);
+    //     }
+
+    //     return existing;
+    // }
+
+    // async Task SaveSku(CompetitorProduct cp)
+    // {
+    //     if (cp.Id == 0)
+    //         await CompetitorProductService.AddAsync(cp);
+    //     else
+    //         await CompetitorProductService.UpdateAsync(cp);
+    // }
 
 }
