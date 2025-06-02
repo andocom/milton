@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using milton.Components;
 using milton.Components.Account;
@@ -44,7 +45,20 @@ builder.Services.AddScoped<SnapshotService>();
 builder.Services.AddScoped<ProductSnapshotService>();
 builder.Services.AddScoped<CompetitorProductService>();
 
-builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+//builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
+//builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+//builder.Services.AddSingleton<IEmailSender>(sp =>
+//{
+//    var config = sp.GetRequiredService<IConfiguration>().GetSection("EmailSettings").Get<EmailSettings>();
+//    return new EmailSender(config);
+//});
+builder.Services.AddSingleton<IEmailSender<ApplicationUser>>(sp =>
+{
+    var settings = sp.GetRequiredService<IConfiguration>()
+                     .GetSection("EmailSettings")
+                     .Get<EmailSettings>();
+    return new EmailSender(settings);
+});
 
 var app = builder.Build();
 
