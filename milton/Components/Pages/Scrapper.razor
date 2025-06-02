@@ -1,8 +1,11 @@
 ﻿@page "/scrapper"
+@using Microsoft.AspNetCore.Authorization
 @using System.Text
 
 @* @attribute [StreamRendering] *@
 @rendermode InteractiveServer
+
+@attribute [Authorize]
 
 
 

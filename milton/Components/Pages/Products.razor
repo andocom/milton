@@ -1,7 +1,11 @@
 ﻿@page "/products"
-@inject ProductService ProductService
+@using Microsoft.AspNetCore.Authorization
 @using milton.Models.CompetitorPrices;
 @using milton.Data;
+
+@inject ProductService ProductService
+
+@attribute [Authorize]
 
 @rendermode InteractiveServer
 

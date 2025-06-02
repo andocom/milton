@@ -1,0 +1,68 @@
+﻿@page "/process-snapshot"
+@using System.Text
+@using System.Web
+@using milton.Models.CompetitorPrices;
+@using milton.Data;
+@using Microsoft.AspNetCore.Authorization
+
+@inject CompetitorProductService CompetitorProductService
+@inject ProductService ProductService
+@inject CompetitorService CompetitorService
+@inject SnapshotService SnapshotService
+
+@attribute [Authorize]
+
+<h3>Process Snapshot</h3>
+
+<MudButton Color="Color.Primary" OnClick="TakeSnapshot">Process Snapshot</MudButton>
+
+<br />
+<MudButton Color="Color.Secondary" OnClick="TestDirect">Test Direct Trophies</MudButton>
+
+<hr/>
+
+@((MarkupString)Log)
+
+@code {
+
+    public string Log { get; set; }
+    private async Task TakeSnapshot()
+    {
+        //Get all competitors
+        var sb = new StringBuilder();
+        var comps = await CompetitorService.GetActiveAsync();
+        foreach (var comp in comps)
+        {
+            sb.AppendLine($"<br/>Processing competitor: {comp.Name}");
+        }
+
+        sb.AppendLine("<hr/>Fetching all comp SKUs...");
+        var compSKUs = await CompetitorProductService.GetAllAsync();
+
+        foreach (var compSKU in compSKUs)
+        {
+            sb.AppendLine($"<br/>Processing CompetitorSKU: {compSKU.CompetitorSKU} for prod {compSKU.Product.Name} and comp {compSKU.Competitor.Name}");
+        }
+
+        Log = sb.ToString();
+    }
+
+    private async Task TestDirect()
+    {
+        var _scrapper = new PriceScraper();
+        var sb = new StringBuilder();
+        sb.AppendLine("<h4>Testing Direct Trophies</h4>");
+        try
+        {
+            var price = await  _scrapper.GetPriceFromSearchApiAsync("24A-RS50");
+            sb.AppendLine("<br/>Price: " + price.ToString("C"));
+        }
+        catch (Exception ex)
+        {
+            sb.AppendLine("<br/>Scrapper Log: " + _scrapper.Log);
+            sb.AppendLine("<br/>Error: " + ex.ToString());
+        }
+        
+        Log = sb.ToString();
+    }
+}

@@ -1,8 +1,11 @@
 ﻿@page "/productgrid"
+@using Microsoft.AspNetCore.Authorization
 @using milton.Models.CompetitorPrices;
 @using milton.Data;
 
 @inject ProductService ProductService
+
+@attribute [Authorize]
 
 @rendermode InteractiveServer
 

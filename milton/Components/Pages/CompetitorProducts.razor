@@ -1,10 +1,13 @@
 @page "/competitor-products"
 @using milton.Models.CompetitorPrices;
 @using milton.Data;
+@using Microsoft.AspNetCore.Authorization
 
 @inject CompetitorProductService CompetitorProductService
 @inject ProductService ProductService
 @inject CompetitorService CompetitorService
+
+@attribute [Authorize]
 
 @rendermode InteractiveServer
 
