@@ -4,6 +4,7 @@
 @using milton.Models.CompetitorPrices;
 @using milton.Data;
 @using Microsoft.AspNetCore.Authorization
+@using milton.Controllers.Scrappers
 
 @inject CompetitorProductService CompetitorProductService
 @inject ProductService ProductService
@@ -49,17 +50,22 @@
 
     private async Task TestDirect()
     {
-        var _scrapper = new PriceScraper();
+        var _allTrophies = new AllTrophies();
+        var _direct = new DirectTrophies();
+
+
+        //var _scrapper = new PriceScraper();
         var sb = new StringBuilder();
-        sb.AppendLine("<h4>Testing Direct Trophies</h4>");
+        sb.AppendLine("<h4>Testing Scrappers</h4>");
         try
         {
-            var price = await  _scrapper.GetPriceFromSearchApiAsync("24A-RS50");
+            //var price = await _direct.GetPriceAsync("24A-RS50");            
+            var price = await _allTrophies.GetPriceAsync("JW7536");
             sb.AppendLine("<br/>Price: " + price.ToString("C"));
         }
         catch (Exception ex)
         {
-            sb.AppendLine("<br/>Scrapper Log: " + _scrapper.Log);
+            sb.AppendLine("<br/>Scrapper Log: " + _allTrophies.Log);
             sb.AppendLine("<br/>Error: " + ex.ToString());
         }
         
