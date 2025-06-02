@@ -65,4 +65,67 @@
 //    }
 //}
 
+using System;
+using System.Globalization;
+using System.Net.Http;
+using System.Text.Json;
+using System.Threading.Tasks;
+using System.Web;
 
+public class PriceScraper
+{
+    private static readonly HttpClient _http = new();
+    public string Log { get; set; }
+
+    public async Task<decimal> GetPriceFromSearchApiAsync(string sku)
+    {
+        var url = $"https://directtrophies.com.au/wp-content/plugins/ajax-search-for-woocommerce-premium/includes/Engines/TNTSearchMySQL/Endpoints/search.php?s={Uri.EscapeDataString(sku)}";
+        var json = await _http.GetStringAsync(url);
+        Log += "Fetched JSON : " + HttpUtility.HtmlDecode(json);
+
+        
+        using var doc = JsonDocument.Parse(json);
+
+        if (!doc.RootElement.TryGetProperty("suggestions", out var suggestions) || suggestions.ValueKind != JsonValueKind.Array)
+            throw new Exception("Invalid response structure — 'suggestions' array missing.");
+
+        foreach (var result in suggestions.EnumerateArray())
+        {
+            if (!result.TryGetProperty("sku", out var skuProp)) continue;
+
+            var candidateSku = skuProp.GetString()?.Trim();
+
+            if (string.Equals(candidateSku, sku, StringComparison.OrdinalIgnoreCase))
+            {
+                if (!result.TryGetProperty("price", out var priceProp))
+                    throw new Exception($"Price not found for SKU '{sku}'");
+
+                var rawPriceHtml = priceProp.GetString() ?? throw new Exception("Price value is null");
+
+                // Strip HTML tags from the price (e.g., <span> and <bdi>)
+                var stripped = StripHtml(rawPriceHtml);
+
+                // If there's a range like "21.95 – 30.95", take the first number
+                var firstPrice = stripped.Split('–', StringSplitOptions.TrimEntries)[0];
+
+                // Clean characters and parse
+                var cleaned = new string(firstPrice.Where(c => char.IsDigit(c) || c == '.' || c == ',').ToArray());
+
+                if (decimal.TryParse(cleaned, NumberStyles.Currency, CultureInfo.InvariantCulture, out var price))
+                    return price;
+
+                throw new Exception($"Could not parse price: '{rawPriceHtml}'");
+            }
+        }
+
+        throw new Exception($"SKU '{sku}' not found in suggestions.");
+    }
+
+    private static string StripHtml(string input)
+    {
+        var s = input.Replace("&#36;", "");
+        var doc = new HtmlAgilityPack.HtmlDocument();
+        doc.LoadHtml(s);
+        return doc.DocumentNode.InnerText;
+    }
+}
