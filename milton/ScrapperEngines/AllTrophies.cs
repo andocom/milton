@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 using System.Text.Json.Serialization;
 using System.Collections.Generic;
 
-namespace milton.ScraperEngines
+namespace milton.ScrapperEngines
 {
     public class AllTrophies
     {
