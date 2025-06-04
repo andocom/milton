@@ -74,12 +74,13 @@ using System.Web;
 
 namespace milton.ScraperEngines
 {
-    public class DirectTrophies
+    public class DirectTrophies : ICompetitorScraper
     {
+        public string CompetitorName => "Trophies Direct";
         private static readonly HttpClient _http = new();
         public string Log { get; set; }
 
-        public async Task<decimal> GetPriceAsync(string sku)
+        public async Task<decimal?> GetPriceAsync(string sku)
         {
             var url = $"https://directtrophies.com.au/wp-content/plugins/ajax-search-for-woocommerce-premium/includes/Engines/TNTSearchMySQL/Endpoints/search.php?s={Uri.EscapeDataString(sku)}";
             var json = await _http.GetStringAsync(url);

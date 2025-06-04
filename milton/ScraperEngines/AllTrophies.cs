@@ -11,13 +11,14 @@ using System.Collections.Generic;
 
 namespace milton.ScraperEngines
 {
-    public class AllTrophies
+    public class AllTrophies : ICompetitorScraper
     {
+        public string CompetitorName => "All Trophies";
         private static readonly HttpClient _http = new();
         public string Log { get; set; }
 
 
-        public async Task<decimal> GetPriceAsync(string sku)
+        public async Task<decimal?> GetPriceAsync(string sku)
         {
             var url = $"https://alltrophies.com.au/wp-admin/admin-ajax.php?action=flatsome_ajax_search_products&query={Uri.EscapeDataString(sku)}";
             var json = await _http.GetStringAsync(url);
@@ -34,9 +35,10 @@ namespace milton.ScraperEngines
             {
                 foreach (var item in data.Suggestions)
                 {
-                    Console.WriteLine($"Product: {item.Value}, Price HTML: {item.Price}");
+                    return decimal.Parse(item.Price); //TESTING ONLY
                 }
             }
+            return 0m;
         }
 
 
