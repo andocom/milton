@@ -13,3 +13,4 @@ Debug/
 *.sln.docstates
 /milton/bin/
 /milton/obj/
+/milton/appsettings.json
