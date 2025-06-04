@@ -72,7 +72,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace milton.Controllers.Scrappers
+namespace milton.ScraperEngines
 {
     public class DirectTrophies
     {

@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 using System.Text.Json.Serialization;
 using System.Collections.Generic;
 
-namespace milton.Controllers.Scrappers
+namespace milton.ScraperEngines
 {
     public class AllTrophies
     {
@@ -43,7 +43,7 @@ namespace milton.Controllers.Scrappers
         private static string StripHtml(string input)
         {
             var s = input.Replace("&#36;", "");
-            var doc = new HtmlAgilityPack.HtmlDocument();
+            var doc = new HtmlDocument();
             doc.LoadHtml(s);
             return doc.DocumentNode.InnerText;
         }
