@@ -17,28 +17,32 @@ namespace milton.ScraperEngines
         private static readonly HttpClient _http = new();
         public string Log { get; set; }
 
-
         public async Task<decimal?> GetPriceAsync(string sku)
         {
-            var url = $"https://alltrophies.com.au/wp-admin/admin-ajax.php?action=flatsome_ajax_search_products&query={Uri.EscapeDataString(sku)}";
-            var json = await _http.GetStringAsync(url);
-            Log += "Fetched JSON : " + HttpUtility.HtmlDecode(json);
-
-            var options = new JsonSerializerOptions
+            try
             {
-                PropertyNameCaseInsensitive = true
-            };
+                using var http = new HttpClient();
+                var url = $"https://alltrophies.com.au/wp-admin/admin-ajax.php?action=flatsome_ajax_search_products&query={Uri.EscapeDataString(sku)}";
+                var json = await http.GetStringAsync(url);
 
-            var data = JsonSerializer.Deserialize<SuggestionResponse>(json, options);
+                using var doc = JsonDocument.Parse(json);
+                var suggestions = doc.RootElement.GetProperty("suggestions");
+                if (suggestions.GetArrayLength() == 0) return null;
 
-            if (data?.Suggestions != null)
-            {
-                foreach (var item in data.Suggestions)
-                {
-                    return decimal.Parse(item.Price); //TESTING ONLY
-                }
+                var priceHtml = suggestions[0].GetProperty("price").GetString();
+                if (string.IsNullOrEmpty(priceHtml)) return null;
+
+                var match = Regex.Matches(priceHtml, @"\d+\.\d{2}")
+                                 .Cast<Match>()
+                                 .LastOrDefault();
+
+                return match != null ? decimal.Parse(match.Value) : (decimal?)null;
             }
-            return 0m;
+            catch (Exception ex)
+            {
+                // Optional: log ex.Message or write to a failure table
+                return null; // return null so app doesn't crash on scraper failures
+            }
         }
 
 
@@ -54,7 +58,7 @@ namespace milton.ScraperEngines
 
 
 
-public class SuggestionResponse
+    public class SuggestionResponse
     {
         [JsonPropertyName("suggestions")]
         public List<Suggestion> Suggestions { get; set; } = new();

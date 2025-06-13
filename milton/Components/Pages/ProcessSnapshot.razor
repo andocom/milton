@@ -61,7 +61,7 @@
         {
             //var price = await _direct.GetPriceAsync("24A-RS50");            
             var price = await _allTrophies.GetPriceAsync("JW7536");
-            sb.AppendLine("<br/>Price: " + price.ToString("C"));
+            sb.AppendLine("<br/>Price: " + price?.ToString("C"));
         }
         catch (Exception ex)
         {
